@@ -25,7 +25,7 @@ public class Classifier {
         List<int[]> test = loadCsv(testPath);
 
         train =  train.subList(0,3000);
-        test = test.subList(0,2000);
+        test = test.subList(0,5);
 
         training= createObjects(train);
         testing = createObjects(test);
@@ -37,11 +37,12 @@ public class Classifier {
         int[] k = {1,3,5,10,15};
         // run for all test numbers
         for ( int i : k) {
-            KNN knn = new KNN();
 
             for ( Number nbr : testing) {
+                KNN knn = KNN.getInstance(i, nbr, "Manhattan");
                 manhattanKnn.add(knn.getKNN("Manhattan",i,training,nbr));
-                euclidKnn.add(knn.getKNN("Euclid",i,training,nbr));
+                KNN knn2 = KNN.getInstance(i, nbr, "Euclid");
+                euclidKnn.add(knn2.getKNN("Euclid",i,training,nbr));
             }
             ArrayList<ResultNode> resultsManhattan;
             ArrayList<ResultNode> resultsEuclid;
@@ -167,7 +168,6 @@ public class Classifier {
     }
 
     public static ArrayList<int[]> condense( ArrayList<int[]> trainingSet) {
-        KNN classifier = new KNN();
         boolean changes = true;
 
         ArrayList<int[]> r = new ArrayList();
@@ -180,7 +180,6 @@ public class Classifier {
         while ( changes = true) {
             changes = false;
             for ( int[] elt : s) {
-                classifier.classify1NN(s,r);
                 // TODO: complete
 
             }

@@ -1,8 +1,6 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by Icewater on 20.02.2017.
@@ -11,7 +9,10 @@ public class KNN {
 
     private ArrayList<Distance> alreadyCalculatedDistances;
     private int k;
-    private Number Number;
+    private Number number;
+    private String distanceType;
+
+    private static ArrayList<KNN> instances;
 
     public ArrayList<Distance> getAlreadyCalculatedDistances() {
         return alreadyCalculatedDistances;
@@ -22,17 +23,35 @@ public class KNN {
     }
 
     public Number getNumber() {
-        return Number;
+        return number;
     }
 
-    public KNN() {
-
-
+    public KNN(int k, Number number, String distanceType) {
+        this.k = k;
+        this.number = number;
+        this.distanceType = distanceType;
     }
 
-    public static KNN getInstance() {
-        // return the proper instance, so we can avoid to calculate the same number again, when only K changes. (should save lots of time)
-        return null;
+    public static KNN getInstance(int k, Number nbr, String distanceType) {
+        // return the proper instance, so we can avoid to calculate the same number/ same distance measure again, when only K changes. (should save lots of time)
+       // create new instance if no one exists yet and return this.
+        if ( instances == null) {
+            KNN instance = new KNN(k,nbr, distanceType);
+            instances = new ArrayList<>();
+            instances.add(instance);
+            return instance;
+        }
+        // if instances exist, check if one with the same Number and a different k exists)
+       if ( instances != null) {
+           for ( KNN instance : instances) {
+               if ( instance.number.equals(nbr) && instance.distanceType.equals(distanceType)) {
+                   return instance;
+               }
+           }
+       }
+        KNN instance = new KNN(k,nbr, distanceType);
+        instances.add(instance);
+        return instance;
     }
 
 
@@ -77,15 +96,15 @@ public class KNN {
 
     public List<Distance> getKNN(String distanceMethod, int k, ArrayList<Number> p, Number x) {
         ArrayList<Distance> distances;
-//        if (alreadyCalculatedDistances == null ) {
+        if (alreadyCalculatedDistances == null ) {
             distances = getDistances(distanceMethod, p, x);
             // get k neighbors of x in p.
             distances = distances.stream().sorted((nbr1, nbr2) -> Double.compare(nbr1.getNeighborDistance(), nbr2.getNeighborDistance())).collect(Collectors.toCollection(ArrayList<Distance>::new));
             alreadyCalculatedDistances = distances;
 
-//        } else {
-//            return alreadyCalculatedDistances.subList(0,k);
-//        }
+        } else {
+            return alreadyCalculatedDistances.subList(0,k);
+        }
         return distances.subList(0, k);
 
 
