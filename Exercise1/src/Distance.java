@@ -29,7 +29,7 @@ public class Distance {
     }
 
     public Number getNumber() {
-        return neighbor;
+        return number;
     }
 
     public int getNeighborClassification() {

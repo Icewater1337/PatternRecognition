@@ -21,25 +21,51 @@ public class Classifier {
 
         String trainPath = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\train.csv";
         String testPath = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\test.csv";
-        List<int[]> train = loadCsv(trainPath);
-        List<int[]> test = loadCsv(testPath);
+        String reducedCSV = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\reducedTraining.csv";
+        List<int[]> train = CSVHandler.loadCsv(trainPath);
+        List<int[]> test = CSVHandler.loadCsv(testPath);
+        List<int[]> reducedTrain = CSVHandler.loadCsv(reducedCSV);
 
-        train =  train.subList(0,3000);
-        test = test.subList(0,5);
+//      train =  train.subList(0,3000);
+//        test = test.subList(0,500);
 
+
+
+//        training= createObjects(train);
         training= createObjects(train);
         testing = createObjects(test);
 
-        ArrayList<List<Distance>> manhattanKnn = new ArrayList<>();
-        ArrayList<List<Distance>> euclidKnn = new ArrayList<>();
+        // condensing and editing of the training set.
+        TrainingSetReducer reducer = new TrainingSetReducer();
+        //condensing
+        training = reducer.condensing(training);
+        try {
+            CSVHandler.saveCsvFile(training,"condensedTraining.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // editing
+        training = reducer.editing(training);
+
+        // save the new csv:
+        try {
+            CSVHandler.saveCsvFile(training,"reducedTraining.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        kNN(training,testing,1, "Manhattan");
+
+
 
 
         int[] k = {1,3,5,10,15};
         // run for all test numbers
         for ( int i : k) {
-
+            ArrayList<List<Distance>> manhattanKnn = new ArrayList<>();
+        ArrayList<List<Distance>> euclidKnn = new ArrayList<>();
             for ( Number nbr : testing) {
                 KNN knn = KNN.getInstance(i, nbr, "Manhattan");
+                //KNN knn = new KNN(i,nbr,"Manhattan");
                 manhattanKnn.add(knn.getKNN("Manhattan",i,training,nbr));
                 KNN knn2 = KNN.getInstance(i, nbr, "Euclid");
                 euclidKnn.add(knn2.getKNN("Euclid",i,training,nbr));
@@ -50,13 +76,32 @@ public class Classifier {
             resultsEuclid = classify(euclidKnn);
 
 
-            System.out.println("The accuracy of the Manhattan distance " +i + "-NN was" +getAccuracy(resultsManhattan));
+              System.out.println("The accuracy of the Manhattan distance " +i + "-NN was" +getAccuracy(resultsManhattan));
             System.out.println("The accuracy of the Euclid distance " +i + "-NN was" +getAccuracy(resultsEuclid));
         }
 
         long stopTime = System.currentTimeMillis();
         long timeElapsed = stopTime- startTime;
         System.out.println("Time elapsed: " + timeElapsed +" which is " + timeElapsed/test.size() +" per test case");
+
+
+    }
+
+    // method to do one KNN manually and get the output, if so desired, not used for the whole.
+    public static void kNN(ArrayList<Number> train, ArrayList<Number> test, int k, String distanceMetric) {
+        ArrayList<Distance> distances;
+        ArrayList<List<Distance>> result = new ArrayList<>();
+        KNN knn = new KNN();
+        for ( Number testCase : test) {
+            distances = knn.getDistances(distanceMetric, train, testCase);
+            // get k neighbors of x in p.
+            distances = distances.stream().sorted((nbr1, nbr2) -> Double.compare(nbr1.getNeighborDistance(), nbr2.getNeighborDistance())).collect(Collectors.toCollection(ArrayList<Distance>::new));
+            result.add(distances.subList(0,k));
+        }
+        ArrayList<ResultNode> classifiedResults;
+        classifiedResults = classify(result);
+
+        System.out.println("The accuracy of the "+ distanceMetric +"distance " +k + "-NN was" +getAccuracy(classifiedResults));
 
 
     }
@@ -71,10 +116,11 @@ public class Classifier {
             }
 
         }
-        return correctIdentifiedDigits/totalDigits;
+        return (double)correctIdentifiedDigits/totalDigits;
     }
 
-    private static ArrayList<ResultNode> classify(ArrayList<List<Distance>> knnsOfNumber) {
+    // makes the classification out of the K- NN result.
+    public static ArrayList<ResultNode> classify(ArrayList<List<Distance>> knnsOfNumber) {
         ArrayList<ResultNode> results = new ArrayList<>();
 
         for ( List<Distance> numberToClassify :knnsOfNumber ) {
@@ -94,7 +140,8 @@ public class Classifier {
 
             Object[] values = sortedOccurrences.values().toArray();
             Object[] keys =  sortedOccurrences.keySet().toArray();
-            boolean isClassifiedCorrectly = true ? (int)keys[0] == numberToClassify.get(0).getNumber().getClassification() : false;
+            Integer classificationOfNbr =  numberToClassify.get(0).getNumber().getClassification();
+            boolean isClassifiedCorrectly = keys[0] == classificationOfNbr;
                 if (sortedOccurrences.size() == 1 ||values[0] == values[1] ) {
                     // return kmeans 1 for now.
                     results.add( new ResultNode(numberToClassify.get(0).getNumber(), nearestNeighbors.subList(0,1), (int)keys[0], isClassifiedCorrectly));
@@ -111,8 +158,9 @@ public class Classifier {
         return results;
     }
 
+    // creates number objects, instead of array representation.
     private static ArrayList<Number> createObjects(List<int[]> train) {
-        ArrayList<Number> nbrs = new ArrayList<Number>();
+        ArrayList<Number> nbrs = new ArrayList<>();
         for ( int[] elt : train ) {
            // the classification of the Number
             int classification = elt[0];
@@ -129,43 +177,8 @@ public class Classifier {
     }
 
 
-    public static ArrayList<int[]> loadCsv(String path) throws FileNotFoundException {
-        //Get scanner instance
-        String line = "";
-        BufferedReader fileReader = null;
-
-        ArrayList<int[]> csvContent = new ArrayList<>();
 
 
-        final String DELIMITER = ",";
-        try
-        {
-
-            //Create the file reader
-            fileReader = new BufferedReader(new FileReader(path));
-
-            //Read the file line by line
-            while ((line = fileReader.readLine()) != null)
-            {
-                //Get all tokens available in line
-                int[] tokens = Stream.of(line.split(DELIMITER)).mapToInt(Integer::parseInt).toArray();
-                csvContent.add(tokens);
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try {
-                fileReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return csvContent;
-    }
 
 
 }

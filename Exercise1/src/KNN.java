@@ -68,12 +68,10 @@ public class KNN {
         int sum = 0;
 
         for (int i = 0; i < length; i++) {
-            sum += Math.pow(2, (pixelsX.get(i) - pixelsP.get(i)));
+            sum += Math.pow( (pixelsX.get(i) - pixelsP.get(i)),2);
         }
 
         return new Distance(Math.sqrt(sum),p,x, p.getClassification());
-
-//        return Math.sqrt(Arrays.stream(integers).mapToDouble(i -> Math.pow(2,i)).sum());
 
     }
 
@@ -93,10 +91,6 @@ public class KNN {
         return new Distance(sum,p,x, p.getClassification());
     }
 
-    public void classify1NN(ArrayList<int[]> p, ArrayList<int[]> x) {
-
-
-    }
 
     public List<Distance> getKNN(String distanceMethod, int k, ArrayList<Number> p, Number x) {
         ArrayList<Distance> distances;
@@ -114,7 +108,7 @@ public class KNN {
 
     }
 
-    private ArrayList<Distance> getDistances(String distanceMethod, ArrayList<Number> p, Number x) {
+    public ArrayList<Distance> getDistances(String distanceMethod, ArrayList<Number> p, Number x) {
         ArrayList<Distance> distances = new ArrayList<>();
         if ( distanceMethod.equals("Manhattan")) {
             for ( Number nbr : p ) {
@@ -130,8 +124,6 @@ public class KNN {
 
         return distances;
     }
-
-
 
 
 
