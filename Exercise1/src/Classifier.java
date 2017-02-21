@@ -167,32 +167,5 @@ public class Classifier {
         return csvContent;
     }
 
-    public static ArrayList<int[]> condense( ArrayList<int[]> trainingSet) {
-        boolean changes = true;
 
-        ArrayList<int[]> r = new ArrayList();
-        r.add(trainingSet.get(0));
-
-        ArrayList<int[]> s = new ArrayList();
-        s = trainingSet;
-        s.remove(0);
-
-        while ( changes = true) {
-            changes = false;
-            for ( int[] elt : s) {
-                // TODO: complete
-
-            }
-        }
-
-
-        return null;
-    }
-
-    public static ArrayList<int[]> edit( ArrayList<int[]> csvData) {
-
-        // TODO: complete.
-
-        return null;
-    }
 }

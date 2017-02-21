@@ -32,6 +32,10 @@ public class KNN {
         this.distanceType = distanceType;
     }
 
+    public KNN () {
+        
+    }
+
     public static KNN getInstance(int k, Number nbr, String distanceType) {
         // return the proper instance, so we can avoid to calculate the same number/ same distance measure again, when only K changes. (should save lots of time)
        // create new instance if no one exists yet and return this.
