@@ -16,43 +16,71 @@ public class Classifier {
     public static void main(String[] args) throws FileNotFoundException {
         long startTime = System.currentTimeMillis();
 
-        ArrayList<Number> training = new ArrayList<Number>();
-        ArrayList<Number> testing = new ArrayList<Number>();
+        ArrayList<Number> training;
+        ArrayList<Number> testing;
 
         String trainPath = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\train.csv";
         String testPath = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\test.csv";
-        String reducedCSV = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\reducedTraining.csv";
+        String reducedCSV = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\editedCondensedTrainingEuclid.csv";
         List<int[]> train = CSVHandler.loadCsv(trainPath);
         List<int[]> test = CSVHandler.loadCsv(testPath);
         List<int[]> reducedTrain = CSVHandler.loadCsv(reducedCSV);
 
 //      train =  train.subList(0,3000);
-//        test = test.subList(0,500);
+//        test = test.subList(0,7700);
 
 
 
+        training= createObjects(reducedTrain);
 //        training= createObjects(train);
-        training= createObjects(train);
         testing = createObjects(test);
 
-        // condensing and editing of the training set.
+        ArrayList<Number> trainingEditing = new ArrayList<>(training);
+        ArrayList<Number> trainingEditingEuclid = new ArrayList<>(training);
+
+      /*  // condensing and editing of the training set. With manhattan and euclid
         TrainingSetReducer reducer = new TrainingSetReducer();
         //condensing
-        training = reducer.condensing(training);
         try {
-            CSVHandler.saveCsvFile(training,"condensedTraining.csv");
+            training = reducer.condensing(training, "Manhattan");
+            CSVHandler.saveCsvFile(training,"condensedTrainingManhattan.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // editing
-        training = reducer.editing(training);
+        try {
+            training = reducer.condensing(training, "Euclid");
 
-        // save the new csv:
-        try {
-            CSVHandler.saveCsvFile(training,"reducedTraining.csv");
+            CSVHandler.saveCsvFile(training,"condensedTrainingEuclid.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ArrayList<Number> trainingBothManhattan = new ArrayList<>(training);
+        // editing
+        try {
+            trainingEditing = reducer.editing(trainingEditing, "Manhattan");
+            CSVHandler.saveCsvFile(trainingEditing,"editedTrainingManhattan.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            trainingEditingEuclid = reducer.editing(trainingEditingEuclid, "Euclid");
+            CSVHandler.saveCsvFile(trainingEditingEuclid,"editedTrainingEuclid.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // both
+        try {
+            trainingBothManhattan = reducer.editing(trainingBothManhattan, "Manhattan");
+            CSVHandler.saveCsvFile(trainingBothManhattan,"editedCondensedTrainingManhattan.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            training = reducer.editing(training, "Euclid");
+            CSVHandler.saveCsvFile(training,"editedCondensedTrainingEuclid.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
 //        kNN(training,testing,1, "Manhattan");
 
 
@@ -62,22 +90,22 @@ public class Classifier {
         // run for all test numbers
         for ( int i : k) {
             ArrayList<List<Distance>> manhattanKnn = new ArrayList<>();
-        ArrayList<List<Distance>> euclidKnn = new ArrayList<>();
+            ArrayList<List<Distance>> euclidKnn = new ArrayList<>();
             for ( Number nbr : testing) {
-                KNN knn = KNN.getInstance(i, nbr, "Manhattan");
+                KNN knn = KNN.getInstance(i, nbr, "Euclid");
                 //KNN knn = new KNN(i,nbr,"Manhattan");
-                manhattanKnn.add(knn.getKNN("Manhattan",i,training,nbr));
-                KNN knn2 = KNN.getInstance(i, nbr, "Euclid");
-                euclidKnn.add(knn2.getKNN("Euclid",i,training,nbr));
+                manhattanKnn.add(knn.getKNN("Euclid",i,training,nbr));
+              //  KNN knn2 = KNN.getInstance(i, nbr, "Euclid");
+               // euclidKnn.add(knn2.getKNN("Euclid",i,training,nbr));
             }
             ArrayList<ResultNode> resultsManhattan;
             ArrayList<ResultNode> resultsEuclid;
             resultsManhattan = classify(manhattanKnn);
-            resultsEuclid = classify(euclidKnn);
+          //  resultsEuclid = classify(euclidKnn);
 
 
-              System.out.println("The accuracy of the Manhattan distance " +i + "-NN was" +getAccuracy(resultsManhattan));
-            System.out.println("The accuracy of the Euclid distance " +i + "-NN was" +getAccuracy(resultsEuclid));
+            System.out.println("The accuracy of the Manhattan distance " +i + "-NN was" +getAccuracy(resultsManhattan));
+          //  System.out.println("The accuracy of the Euclid distance " +i + "-NN was" +getAccuracy(resultsEuclid));
         }
 
         long stopTime = System.currentTimeMillis();
@@ -116,6 +144,7 @@ public class Classifier {
             }
 
         }
+        System.out.println("correctly identified Digits: " + correctIdentifiedDigits + " Total digits: " + totalDigits);
         return (double)correctIdentifiedDigits/totalDigits;
     }
 

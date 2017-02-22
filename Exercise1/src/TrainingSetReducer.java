@@ -5,7 +5,7 @@ public class TrainingSetReducer {
 
 
 
-	public ArrayList<Number> condensing (ArrayList<Number> trainingSet) {
+	public ArrayList<Number> condensing (ArrayList<Number> trainingSet, String method) {
 
 		boolean changes = true;
 
@@ -27,7 +27,7 @@ public class TrainingSetReducer {
             	ArrayList<ResultNode> classifiedInstances;
 
             	KNN knn =new KNN();
-               distance.add(knn.getKNN("Manhattan",1,r,elt));
+               distance.add(knn.getKNN(method,1,r,elt));
                classifiedInstances =  Classifier.classify(distance);
 
                if ( !classifiedInstances.get(0).isClassifiedCorrectly()) {
@@ -45,7 +45,7 @@ public class TrainingSetReducer {
 
 	}
 
-	public ArrayList<Number> editing(ArrayList<Number> trainingSet) {
+	public ArrayList<Number> editing(ArrayList<Number> trainingSet, String method) {
 
 		ArrayList<Number> s;
 		s = trainingSet;
@@ -59,7 +59,7 @@ public class TrainingSetReducer {
             KNN knn =new KNN();
             ArrayList<Number> tmpNodes = new ArrayList<>(s);
             tmpNodes.remove(elt);
-            distance.add(knn.getKNN("Manhattan",3,tmpNodes,elt));
+            distance.add(knn.getKNN(method,3,tmpNodes,elt));
             classifiedInstances =  Classifier.classify(distance);
 
             if ( !classifiedInstances.get(0).isClassifiedCorrectly()) {
