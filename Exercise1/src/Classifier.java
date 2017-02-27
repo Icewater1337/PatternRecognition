@@ -24,15 +24,15 @@ public class Classifier {
         String reducedCSV = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\editedCondensedTrainingEuclid.csv";
         List<int[]> train = CSVHandler.loadCsv(trainPath);
         List<int[]> test = CSVHandler.loadCsv(testPath);
-        List<int[]> reducedTrain = CSVHandler.loadCsv(reducedCSV);
+//        List<int[]> reducedTrain = CSVHandler.loadCsv(reducedCSV);
 
 //      train =  train.subList(0,3000);
-//        test = test.subList(0,7700);
+        test = test.subList(10001,15001 );
 
 
 
-        training= createObjects(reducedTrain);
-//        training= createObjects(train);
+//        training= createObjects(reducedTrain);
+        training= createObjects(train);
         testing = createObjects(test);
 
         ArrayList<Number> trainingEditing = new ArrayList<>(training);
@@ -92,9 +92,9 @@ public class Classifier {
             ArrayList<List<Distance>> manhattanKnn = new ArrayList<>();
             ArrayList<List<Distance>> euclidKnn = new ArrayList<>();
             for ( Number nbr : testing) {
-                KNN knn = KNN.getInstance(i, nbr, "Euclid");
+                KNN knn = KNN.getInstance(i, nbr, "Manhattan");
                 //KNN knn = new KNN(i,nbr,"Manhattan");
-                manhattanKnn.add(knn.getKNN("Euclid",i,training,nbr));
+                manhattanKnn.add(knn.getKNN("Manhattan",i,training,nbr));
               //  KNN knn2 = KNN.getInstance(i, nbr, "Euclid");
                // euclidKnn.add(knn2.getKNN("Euclid",i,training,nbr));
             }
