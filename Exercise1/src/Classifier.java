@@ -21,13 +21,13 @@ public class Classifier {
 
         String trainPath = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\train.csv";
         String testPath = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\test.csv";
-        String reducedCSV = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\editedCondensedTrainingEuclid.csv";
+        String reducedCSV = "C:\\Users\\Icewater\\IdeaProjects\\PatternRecognition\\editedTrainingManhattan.csv";
         List<int[]> train = CSVHandler.loadCsv(trainPath);
         List<int[]> test = CSVHandler.loadCsv(testPath);
 //        List<int[]> reducedTrain = CSVHandler.loadCsv(reducedCSV);
 
-//      train =  train.subList(0,3000);
-        test = test.subList(10001,15001 );
+        // use subset because of java memory problem ( 11G used)
+       test = test.subList(10001,15001);
 
 
 
@@ -38,7 +38,7 @@ public class Classifier {
         ArrayList<Number> trainingEditing = new ArrayList<>(training);
         ArrayList<Number> trainingEditingEuclid = new ArrayList<>(training);
 
-      /*  // condensing and editing of the training set. With manhattan and euclid
+      /*  // condensing and editing of the training set. With manhattan and euclid, and storing the editss to own files.
         TrainingSetReducer reducer = new TrainingSetReducer();
         //condensing
         try {
@@ -93,10 +93,7 @@ public class Classifier {
             ArrayList<List<Distance>> euclidKnn = new ArrayList<>();
             for ( Number nbr : testing) {
                 KNN knn = KNN.getInstance(i, nbr, "Manhattan");
-                //KNN knn = new KNN(i,nbr,"Manhattan");
                 manhattanKnn.add(knn.getKNN("Manhattan",i,training,nbr));
-              //  KNN knn2 = KNN.getInstance(i, nbr, "Euclid");
-               // euclidKnn.add(knn2.getKNN("Euclid",i,training,nbr));
             }
             ArrayList<ResultNode> resultsManhattan;
             ArrayList<ResultNode> resultsEuclid;
@@ -134,6 +131,7 @@ public class Classifier {
 
     }
 
+
     private static double getAccuracy(ArrayList<ResultNode> results) {
         int correctIdentifiedDigits = 0;
         int totalDigits = results.size();
@@ -148,7 +146,11 @@ public class Classifier {
         return (double)correctIdentifiedDigits/totalDigits;
     }
 
-    // makes the classification out of the K- NN result.
+    /**
+     * Clasifies the distances.
+     * @param knnsOfNumber
+     * @return
+     */
     public static ArrayList<ResultNode> classify(ArrayList<List<Distance>> knnsOfNumber) {
         ArrayList<ResultNode> results = new ArrayList<>();
 
@@ -187,7 +189,11 @@ public class Classifier {
         return results;
     }
 
-    // creates number objects, instead of array representation.
+    /**
+     * change representation away from array of pixels. To Number objects.
+     * @param train
+     * @return
+     */
     private static ArrayList<Number> createObjects(List<int[]> train) {
         ArrayList<Number> nbrs = new ArrayList<>();
         for ( int[] elt : train ) {

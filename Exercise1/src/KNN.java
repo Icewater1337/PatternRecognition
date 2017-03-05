@@ -36,6 +36,13 @@ public class KNN {
         
     }
 
+    /**
+     * Returns the instance of the KNN. Used for storing already calculated K-NNs.
+     * @param k
+     * @param nbr
+     * @param distanceType
+     * @return
+     */
     public static KNN getInstance(int k, Number nbr, String distanceType) {
         // return the proper instance, so we can avoid to calculate the same number/ same distance measure again, when only K changes. (should save lots of time)
        // create new instance if no one exists yet and return this.
@@ -60,7 +67,6 @@ public class KNN {
 
 
 
-    //Euclidean Distance
     public Distance getEuclideanDistance(Number p, Number x) {
         ArrayList<Integer> pixelsP = p.getPixels();
         ArrayList<Integer> pixelsX = x.getPixels();
@@ -76,7 +82,6 @@ public class KNN {
     }
 
 
-    // manhattan distance
     public Distance getManhattanDistance(Number p, Number x) {
         ArrayList<Integer> pixelsP = p.getPixels();
         ArrayList<Integer> pixelsX = x.getPixels();
@@ -97,7 +102,12 @@ public class KNN {
         if (alreadyCalculatedDistances == null ) {
             distances = getDistances(distanceMethod, p, x);
             // get k neighbors of x in p.
-            distances = distances.stream().sorted((nbr1, nbr2) -> Double.compare(nbr1.getNeighborDistance(), nbr2.getNeighborDistance())).collect(Collectors.toCollection(ArrayList<Distance>::new));
+            distances = distances
+                    .stream()
+                    .sorted((nbr1, nbr2)
+                            -> Double
+                                .compare(nbr1.getNeighborDistance(), nbr2.getNeighborDistance()))
+                                    .collect(Collectors.toCollection(ArrayList<Distance>::new));
             alreadyCalculatedDistances = distances;
 
         } else {
