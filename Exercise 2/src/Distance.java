@@ -4,36 +4,31 @@
  */
 public class Distance {
 
-    private double neighborDistance;
-    private Number neighbor;
+    private double clusterDistance;
+    private Cluster closestCluster;
     private Number number;
-    private int neighborClassification;
 
 
 
-    public Distance(double neighborDistance, Number neighbor, Number number, int neighborClassification){
-        this.neighborDistance = neighborDistance;
-        this.neighbor = neighbor;
+    public Distance(double clusterDistance, Cluster closestCluster, Number number){
+        this.clusterDistance = clusterDistance;
+        this.closestCluster = closestCluster;
         this.number = number;
-        this. neighborClassification = neighborClassification;
 
     }
 
 
     public double getNeighborDistance() {
-        return neighborDistance;
+        return clusterDistance;
     }
 
-    public Number getNeighbor() {
-        return neighbor;
+    public Cluster getNeighbor() {
+        return closestCluster;
     }
 
     public Number getNumber() {
         return number;
     }
 
-    public int getNeighborClassification() {
-        return neighborClassification;
-    }
 
 }
