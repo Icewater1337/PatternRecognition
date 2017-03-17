@@ -1,11 +1,7 @@
-import java.io.*;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Map.Entry.comparingByValue;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jblas.DoubleMatrix;
 
 /**
  * Created by Icewater on 20.02.2017.
@@ -20,6 +16,7 @@ public class Executor {
 
         String trainPath = "train.csv";
         String testPath = "test.csv";
+      //  String trainPath= "condensedTrainingEuclid.csv";
         List<int[]> train = CSVHandler.loadCsv(trainPath);
         List<int[]> test = CSVHandler.loadCsv(testPath);
 
@@ -27,10 +24,17 @@ public class Executor {
         samples.addAll(createObjects(test));
         samples.addAll(createObjects(train));
 
-        samples = samples.subList(0,100);
+        //samples = samples.subList(0,100);
 
         KMeans kmeans = new KMeans();
-        kmeans.kmeansClustering(samples,10);
+        List<Cluster> clusters = kmeans.kmeansClustering(samples,10);
+
+        double dunnIndex = kmeans.dunnIndex(clusters);
+
+        System.out.println(dunnIndex);
+
+        double davisBouldinIndex = kmeans.davisBouldinIndex(clusters);
+        System.out.println(davisBouldinIndex);
 
     }
 

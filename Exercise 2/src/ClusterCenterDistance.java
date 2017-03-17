@@ -2,7 +2,7 @@
 /**
  * Created by Icewater on 20.02.2017.
  */
-public class Distance {
+public class ClusterCenterDistance {
 
     private double clusterDistance;
     private Cluster closestCluster;
@@ -10,7 +10,7 @@ public class Distance {
 
 
 
-    public Distance(double clusterDistance, Cluster closestCluster, Number number){
+    public ClusterCenterDistance(double clusterDistance, Cluster closestCluster, Number number){
         this.clusterDistance = clusterDistance;
         this.closestCluster = closestCluster;
         this.number = number;

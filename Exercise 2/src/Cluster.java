@@ -9,6 +9,7 @@ public class Cluster {
 
     private ArrayList<Number> membersOfCluster;
     private Number centerOfCluster;
+    private double maxDiameter;
 
 
     public Cluster(ArrayList<Number> nbrs, Number centerOfCluster) {
@@ -21,6 +22,8 @@ public class Cluster {
         ArrayList<Number> tmp = new ArrayList<>();
         tmp.add(clusterMembers);
         this.centerOfCluster = center;
+        this.membersOfCluster = tmp;
+        this.maxDiameter = 0;
     }
 
     public void setMember(Number newMember) {
@@ -40,4 +43,15 @@ public class Cluster {
         centerOfCluster = newCenter;
     }
 
+    public void setMembers(ArrayList<Number> members) {
+        this.membersOfCluster = members;
+    }
+
+    public double getMaxDiameter() {
+        return maxDiameter;
+    }
+
+    public void setMaxDiameter(double maxDiameter) {
+        this.maxDiameter = maxDiameter;
+    }
 }
