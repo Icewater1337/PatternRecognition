@@ -1,0 +1,30 @@
+Please enter the desired K values separated by a ';'. Example: 5;10;15
+5;7;9;10;12;15
+Thank you, calculating now. Might take a while!
+K is: 5
+dunnIndex: 0.1299706789212441
+Davis Bould Index: 2.452442635719391
+_________________________________________________
+K is: 7
+dunnIndex: 0.10982800791421078
+Davis Bould Index: 2.348990393074334
+_________________________________________________
+K is: 9
+dunnIndex: 0.07280099032934269
+Davis Bould Index: 2.366087197856154
+_________________________________________________
+K is: 10
+dunnIndex: 0.13414687974045852
+Davis Bould Index: 2.4218377001763316
+_________________________________________________
+K is: 12
+dunnIndex: 0.11156971351522392
+Davis Bould Index: 2.4187300727742573
+_________________________________________________
+K is: 15
+dunnIndex: 0.10201610020847558
+Davis Bould Index: 2.442719688237177
+_________________________________________________
+
+Process finished with exit code 0
+

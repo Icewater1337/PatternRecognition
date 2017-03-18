@@ -1,6 +1,10 @@
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
 import org.jblas.DoubleMatrix;
 
 /**
@@ -10,7 +14,14 @@ import org.jblas.DoubleMatrix;
 public class Executor {
 
     public static void main(String[] args) throws FileNotFoundException {
-        long startTime = System.currentTimeMillis();
+
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter the desired K values separated by a ';'. Example: 5;10;15");
+        String kValues = scan.nextLine();
+        System.out.println("Thank you, calculating now. Might take a while!");
+        scan.close();
+
+        List<Integer> kNumbers = Arrays.asList(kValues.split(";")).stream().map(Integer::valueOf).collect(Collectors.toList());
 
         List<Number> samples = new ArrayList<>();
 
@@ -26,15 +37,19 @@ public class Executor {
 
         //samples = samples.subList(0,100);
 
-        KMeans kmeans = new KMeans();
-        List<Cluster> clusters = kmeans.kmeansClustering(samples,10);
+        for ( int k : kNumbers )
+        {
+            KMeans kmeans = new KMeans();
+            List<Cluster> clusters = kmeans.kmeansClustering(samples,k);
 
-        double dunnIndex = kmeans.dunnIndex(clusters);
+            double dunnIndex = kmeans.dunnIndex(clusters);
+            System.out.println("K is: " +k );
+            System.out.println("dunnIndex: " +dunnIndex );
 
-        System.out.println(dunnIndex);
-
-        double davisBouldinIndex = kmeans.davisBouldinIndex(clusters);
-        System.out.println(davisBouldinIndex);
+            double davisBouldinIndex = kmeans.davisBouldinIndex(clusters);
+            System.out.println("Davis Bould Index: " +davisBouldinIndex);
+            System.out.println("_________________________________________________");
+        }
 
     }
 
