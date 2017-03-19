@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import org.jblas.DoubleMatrix;
 
 /**
  * Created by Icewater on 20.02.2017.
@@ -54,19 +53,6 @@ public class Executor {
     }
 
 
-    private static double getAccuracy(ArrayList<ResultNode> results) {
-        int correctIdentifiedDigits = 0;
-        int totalDigits = results.size();
-
-        for ( ResultNode node : results) {
-            if ( node.isClassifiedCorrectly()) {
-                correctIdentifiedDigits++;
-            }
-
-        }
-        System.out.println("correctly identified Digits: " + correctIdentifiedDigits + " Total digits: " + totalDigits);
-        return (double)correctIdentifiedDigits/totalDigits;
-    }
 
 
     /**
